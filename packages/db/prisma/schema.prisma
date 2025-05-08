@@ -14,11 +14,13 @@ model User {
 }
 
 model Website {
-  id      String         @id @default(uuid()) 
-  url     String
-  UsedId  String
-  ticks   WebsiteTick[]
+  id       String       @id @default(uuid())
+  url      String
+  UsedId   String
+  ticks    WebsiteTick[]
+  disable  Boolean      @default(false) // Corrected to Boolean
 }
+
 
 model Validator {
   id        String        @id @default(uuid())

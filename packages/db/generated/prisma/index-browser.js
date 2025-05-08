@@ -128,7 +128,8 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.WebsiteScalarFieldEnum = {
   id: 'id',
   url: 'url',
-  UsedId: 'UsedId'
+  UsedId: 'UsedId',
+  disable: 'disable'
 };
 
 exports.Prisma.ValidatorScalarFieldEnum = {

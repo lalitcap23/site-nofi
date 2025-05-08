@@ -2190,18 +2190,21 @@ export namespace Prisma {
     id: string | null
     url: string | null
     UsedId: string | null
+    disable: boolean | null
   }
 
   export type WebsiteMaxAggregateOutputType = {
     id: string | null
     url: string | null
     UsedId: string | null
+    disable: boolean | null
   }
 
   export type WebsiteCountAggregateOutputType = {
     id: number
     url: number
     UsedId: number
+    disable: number
     _all: number
   }
 
@@ -2210,18 +2213,21 @@ export namespace Prisma {
     id?: true
     url?: true
     UsedId?: true
+    disable?: true
   }
 
   export type WebsiteMaxAggregateInputType = {
     id?: true
     url?: true
     UsedId?: true
+    disable?: true
   }
 
   export type WebsiteCountAggregateInputType = {
     id?: true
     url?: true
     UsedId?: true
+    disable?: true
     _all?: true
   }
 
@@ -2301,6 +2307,7 @@ export namespace Prisma {
     id: string
     url: string
     UsedId: string
+    disable: boolean
     _count: WebsiteCountAggregateOutputType | null
     _min: WebsiteMinAggregateOutputType | null
     _max: WebsiteMaxAggregateOutputType | null
@@ -2324,6 +2331,7 @@ export namespace Prisma {
     id?: boolean
     url?: boolean
     UsedId?: boolean
+    disable?: boolean
     ticks?: boolean | Website$ticksArgs<ExtArgs>
     _count?: boolean | WebsiteCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["website"]>
@@ -2332,21 +2340,24 @@ export namespace Prisma {
     id?: boolean
     url?: boolean
     UsedId?: boolean
+    disable?: boolean
   }, ExtArgs["result"]["website"]>
 
   export type WebsiteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     url?: boolean
     UsedId?: boolean
+    disable?: boolean
   }, ExtArgs["result"]["website"]>
 
   export type WebsiteSelectScalar = {
     id?: boolean
     url?: boolean
     UsedId?: boolean
+    disable?: boolean
   }
 
-  export type WebsiteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "UsedId", ExtArgs["result"]["website"]>
+  export type WebsiteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "UsedId" | "disable", ExtArgs["result"]["website"]>
   export type WebsiteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     ticks?: boolean | Website$ticksArgs<ExtArgs>
     _count?: boolean | WebsiteCountOutputTypeDefaultArgs<ExtArgs>
@@ -2363,6 +2374,7 @@ export namespace Prisma {
       id: string
       url: string
       UsedId: string
+      disable: boolean
     }, ExtArgs["result"]["website"]>
     composites: {}
   }
@@ -2790,6 +2802,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Website", 'String'>
     readonly url: FieldRef<"Website", 'String'>
     readonly UsedId: FieldRef<"Website", 'String'>
+    readonly disable: FieldRef<"Website", 'Boolean'>
   }
     
 
@@ -5415,7 +5428,8 @@ export namespace Prisma {
   export const WebsiteScalarFieldEnum: {
     id: 'id',
     url: 'url',
-    UsedId: 'UsedId'
+    UsedId: 'UsedId',
+    disable: 'disable'
   };
 
   export type WebsiteScalarFieldEnum = (typeof WebsiteScalarFieldEnum)[keyof typeof WebsiteScalarFieldEnum]
@@ -5475,6 +5489,13 @@ export namespace Prisma {
    * Reference to a field of type 'String[]'
    */
   export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -5581,6 +5602,7 @@ export namespace Prisma {
     id?: StringFilter<"Website"> | string
     url?: StringFilter<"Website"> | string
     UsedId?: StringFilter<"Website"> | string
+    disable?: BoolFilter<"Website"> | boolean
     ticks?: WebsiteTickListRelationFilter
   }
 
@@ -5588,6 +5610,7 @@ export namespace Prisma {
     id?: SortOrder
     url?: SortOrder
     UsedId?: SortOrder
+    disable?: SortOrder
     ticks?: WebsiteTickOrderByRelationAggregateInput
   }
 
@@ -5598,6 +5621,7 @@ export namespace Prisma {
     NOT?: WebsiteWhereInput | WebsiteWhereInput[]
     url?: StringFilter<"Website"> | string
     UsedId?: StringFilter<"Website"> | string
+    disable?: BoolFilter<"Website"> | boolean
     ticks?: WebsiteTickListRelationFilter
   }, "id">
 
@@ -5605,6 +5629,7 @@ export namespace Prisma {
     id?: SortOrder
     url?: SortOrder
     UsedId?: SortOrder
+    disable?: SortOrder
     _count?: WebsiteCountOrderByAggregateInput
     _max?: WebsiteMaxOrderByAggregateInput
     _min?: WebsiteMinOrderByAggregateInput
@@ -5617,6 +5642,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Website"> | string
     url?: StringWithAggregatesFilter<"Website"> | string
     UsedId?: StringWithAggregatesFilter<"Website"> | string
+    disable?: BoolWithAggregatesFilter<"Website"> | boolean
   }
 
   export type ValidatorWhereInput = {
@@ -5773,6 +5799,7 @@ export namespace Prisma {
     id?: string
     url: string
     UsedId: string
+    disable?: boolean
     ticks?: WebsiteTickCreateNestedManyWithoutWebsiteInput
   }
 
@@ -5780,6 +5807,7 @@ export namespace Prisma {
     id?: string
     url: string
     UsedId: string
+    disable?: boolean
     ticks?: WebsiteTickUncheckedCreateNestedManyWithoutWebsiteInput
   }
 
@@ -5787,6 +5815,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     UsedId?: StringFieldUpdateOperationsInput | string
+    disable?: BoolFieldUpdateOperationsInput | boolean
     ticks?: WebsiteTickUpdateManyWithoutWebsiteNestedInput
   }
 
@@ -5794,6 +5823,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     UsedId?: StringFieldUpdateOperationsInput | string
+    disable?: BoolFieldUpdateOperationsInput | boolean
     ticks?: WebsiteTickUncheckedUpdateManyWithoutWebsiteNestedInput
   }
 
@@ -5801,18 +5831,21 @@ export namespace Prisma {
     id?: string
     url: string
     UsedId: string
+    disable?: boolean
   }
 
   export type WebsiteUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     UsedId?: StringFieldUpdateOperationsInput | string
+    disable?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type WebsiteUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     UsedId?: StringFieldUpdateOperationsInput | string
+    disable?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ValidatorCreateInput = {
@@ -5977,6 +6010,11 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type WebsiteTickListRelationFilter = {
     every?: WebsiteTickWhereInput
     some?: WebsiteTickWhereInput
@@ -5991,18 +6029,29 @@ export namespace Prisma {
     id?: SortOrder
     url?: SortOrder
     UsedId?: SortOrder
+    disable?: SortOrder
   }
 
   export type WebsiteMaxOrderByAggregateInput = {
     id?: SortOrder
     url?: SortOrder
     UsedId?: SortOrder
+    disable?: SortOrder
   }
 
   export type WebsiteMinOrderByAggregateInput = {
     id?: SortOrder
     url?: SortOrder
     UsedId?: SortOrder
+    disable?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type ValidatorCountOrderByAggregateInput = {
@@ -6156,6 +6205,10 @@ export namespace Prisma {
     connectOrCreate?: WebsiteTickCreateOrConnectWithoutWebsiteInput | WebsiteTickCreateOrConnectWithoutWebsiteInput[]
     createMany?: WebsiteTickCreateManyWebsiteInputEnvelope
     connect?: WebsiteTickWhereUniqueInput | WebsiteTickWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type WebsiteTickUpdateManyWithoutWebsiteNestedInput = {
@@ -6312,6 +6365,19 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -6483,12 +6549,14 @@ export namespace Prisma {
     id?: string
     url: string
     UsedId: string
+    disable?: boolean
   }
 
   export type WebsiteUncheckedCreateWithoutTicksInput = {
     id?: string
     url: string
     UsedId: string
+    disable?: boolean
   }
 
   export type WebsiteCreateOrConnectWithoutTicksInput = {
@@ -6530,12 +6598,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     UsedId?: StringFieldUpdateOperationsInput | string
+    disable?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type WebsiteUncheckedUpdateWithoutTicksInput = {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     UsedId?: StringFieldUpdateOperationsInput | string
+    disable?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ValidatorUpsertWithoutTicksInput = {
