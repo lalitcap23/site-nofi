@@ -53,8 +53,7 @@ export default function Dashboard() {
     document.documentElement.classList.toggle("dark", newTheme === "dark")
   }
 
-  // Performance chart data
-  const performanceData = [
+const performanceData = [
     { time: "00:00", tps: 2100, latency: 120, validators: 1250 },
     { time: "04:00", tps: 2200, latency: 125, validators: 1260 },
     { time: "08:00", tps: 3200, latency: 85, validators: 1270 },
