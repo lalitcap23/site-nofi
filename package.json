@@ -24,6 +24,7 @@
   "dependencies": {
     "@types/express": "^5.0.1",
     "@types/recharts": "^2.0.1",
+    "cors": "^2.8.5",
     "recharts": "^2.15.3"
   }
 }

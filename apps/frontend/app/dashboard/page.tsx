@@ -1,232 +1,255 @@
-"use client"
+"use client";
+import React, { useState, useMemo } from 'react';
+import { ChevronDown, ChevronUp, Globe, Plus, Moon, Sun } from 'lucide-react';
+import { useWebsites } from '@/hooks/use.website';
+import axios from 'axios';
+import { API_BACKEND_URL } from '@/config';
+import { useAuth } from '@clerk/nextjs';
 
-import { useState } from "react"
-import { Check, Plus, Globe, Server, X, Loader2 } from "lucide-react"
+type UptimeStatus = "good" | "bad" | "unknown";
 
-export default function MonitoringDashboard() {
-  // Website type definition
-  type Website = {
-    id: string
-    name: string
-    url: string
-    status: {
-      server1: "up" | "down" | "checking"
-      server2: "up" | "down" | "checking"
-      server3: "up" | "down" | "checking"
-    }
-    lastChecked: Date
-  }
+function StatusCircle({ status }: { status: UptimeStatus }) {
+  return (
+    <div className={`w-3 h-3 rounded-full ${status === 'good' ? 'bg-green-500' : status === 'bad' ? 'bg-red-500' : 'bg-gray-500'}`} />
+  );
+}
 
-  // State for websites
-  const [websites, setWebsites] = useState<Website[]>([
-    {
-      id: "1",
-      name: "Example Website",
-      url: "https://example.com",
-      status: {
-        server1: "up",
-        server2: "up",
-        server3: "up",
-      },
-      lastChecked: new Date(),
-    },
-  ])
+function UptimeTicks({ ticks }: { ticks: UptimeStatus[] }) {
+  return (
+    <div className="flex gap-1 mt-2">
+      {ticks.map((tick, index) => (
+        <div
+          key={index}
+          className={`w-8 h-2 rounded ${
+            tick === 'good' ? 'bg-green-500' : tick === 'bad' ? 'bg-red-500' : 'bg-gray-500'
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
 
-  // State for modal and form
-  const [showModal, setShowModal] = useState(false)
-  const [newWebsite, setNewWebsite] = useState({ name: "", url: "" })
-
-  // Add website function
-  const addWebsite = () => {
-    if (!newWebsite.name || !newWebsite.url) return
-
-    // Create a new website with checking status
-    const website: Website = {
-      id: Date.now().toString(),
-      name: newWebsite.name,
-      url: newWebsite.url,
-      status: {
-        server1: "checking",
-        server2: "checking",
-        server3: "checking",
-      },
-      lastChecked: new Date(),
-    }
-
-    setWebsites([...websites, website])
-    setNewWebsite({ name: "", url: "" })
-    setShowModal(false)
-
-    // Simulate checking status from different servers
-    setTimeout(() => {
-      setWebsites((prev) =>
-        prev.map((site) =>
-          site.id === website.id
-            ? {
-                ...site,
-                status: {
-                  server1: Math.random() > 0.2 ? "up" : "down",
-                  server2: Math.random() > 0.2 ? "up" : "down",
-                  server3: Math.random() > 0.2 ? "up" : "down",
-                },
-              }
-            : site,
-        ),
-      )
-    }, 2000)
-  }
-
-  // Format time ago
-  const formatTimeAgo = (date: Date) => {
-    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
-
-    if (seconds < 60) return `${seconds} seconds ago`
-    const minutes = Math.floor(seconds / 60)
-    if (minutes < 60) return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`
-    const hours = Math.floor(minutes / 60)
-    if (hours < 24) return `${hours} hour${hours !== 1 ? "s" : ""} ago`
-    const days = Math.floor(hours / 24)
-    return `${days} day${days !== 1 ? "s" : ""} ago`
-  }
-
-  // Status indicator component
-  const StatusIndicator = ({ status }: { status: "up" | "down" | "checking" }) => {
-    if (status === "checking") {
-      return <Loader2 className="h-5 w-5 text-gray-400 animate-spin" />
-    } else if (status === "up") {
-      return <Check className="h-5 w-5 text-green-500" />
-    } else {
-      return <X className="h-5 w-5 text-red-500" />
-    }
-  }
+function CreateWebsiteModal({ isOpen, onClose }: { isOpen: boolean; onClose: (url: string | null) => void }) {
+  const [url, setUrl] = useState('');
+  if (!isOpen) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      {/* Header */}
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Website Monitoring</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Add Website
-        </button>
-      </header>
-
-      {/* Website List */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {websites.map((website) => (
-          <div key={website.id} className="bg-white p-4 rounded-lg shadow">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h2 className="font-bold text-lg">{website.name}</h2>
-                <p className="text-gray-500 text-sm flex items-center">
-                  <Globe className="h-3 w-3 mr-1" />
-                  {website.url}
-                </p>
-              </div>
-              <div
-                className={`px-2 py-1 rounded text-xs font-medium ${
-                  Object.values(website.status).includes("down")
-                    ? "bg-red-100 text-red-800"
-                    : Object.values(website.status).includes("checking")
-                      ? "bg-gray-100 text-gray-800"
-                      : "bg-green-100 text-green-800"
-                }`}
-              >
-                {Object.values(website.status).includes("down")
-                  ? "Issues"
-                  : Object.values(website.status).includes("checking")
-                    ? "Checking"
-                    : "Healthy"}
-              </div>
-            </div>
-
-            {/* Server Status */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center py-2 border-b">
-                <div className="flex items-center gap-2">
-                  <Server className="h-4 w-4 text-gray-500" />
-                  <span>Server 1</span>
-                </div>
-                <StatusIndicator status={website.status.server1} />
-              </div>
-              <div className="flex justify-between items-center py-2 border-b">
-                <div className="flex items-center gap-2">
-                  <Server className="h-4 w-4 text-gray-500" />
-                  <span>Server 2</span>
-                </div>
-                <StatusIndicator status={website.status.server2} />
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <div className="flex items-center gap-2">
-                  <Server className="h-4 w-4 text-gray-500" />
-                  <span>Server 3</span>
-                </div>
-                <StatusIndicator status={website.status.server3} />
-              </div>
-            </div>
-
-            <div className="mt-4 text-sm text-gray-500">Last checked: {formatTimeAgo(website.lastChecked)}</div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+        <h2 className="text-xl font-semibold mb-4 dark:text-white">Add New Website</h2>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              URL
+            </label>
+            <input
+              type="url"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+              placeholder="https://example.com"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
           </div>
-        ))}
+          <div className="flex justify-end space-x-3 mt-6">
+            <button
+              type="button"
+              onClick={() => onClose(null)}
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              onClick={() => onClose(url)}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+            >
+              Add Website
+            </button>
+          </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Empty State */}
-      {websites.length === 0 && (
-        <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg bg-white mt-8">
-          <h3 className="text-lg font-medium">No websites monitored yet</h3>
-          <p className="text-gray-500 mt-1 mb-4">Add your first website to start monitoring</p>
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Add Website
-          </button>
-        </div>
-      )}
+interface ProcessedWebsite {
+  id: string;
+  url: string;
+  status: UptimeStatus;
+  uptimePercentage: number;
+  lastChecked: string;
+  uptimeTicks: UptimeStatus[];
+}
 
-      {/* Add Website Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Add a new website to monitor</h2>
+function WebsiteCard({ website }: { website: ProcessedWebsite }) {
+  const [isExpanded, setIsExpanded] = useState(false);
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Website Name</label>
-              <input
-                type="text"
-                placeholder="My Website"
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                value={newWebsite.name}
-                onChange={(e) => setNewWebsite({ ...newWebsite, name: e.target.value })}
-              />
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
-              <input
-                type="text"
-                placeholder="https://example.com"
-                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                value={newWebsite.url}
-                onChange={(e) => setNewWebsite({ ...newWebsite, url: e.target.value })}
-              />
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <button onClick={() => setShowModal(false)} className="px-4 py-2 border rounded hover:bg-gray-100">
-                Cancel
-              </button>
-              <button onClick={addWebsite} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                Add Website
-              </button>
-            </div>
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      <div
+        className="p-4 cursor-pointer flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center space-x-4">
+          <StatusCircle status={website.status} />
+          <div>
+            <h3 className="font-semibold text-gray-900 dark:text-white">{website.url}</h3>
           </div>
+        </div>
+        <div className="flex items-center space-x-4">
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {website.uptimePercentage.toFixed(1)}% uptime
+          </span>
+          {isExpanded ? (
+            <ChevronUp className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+          )}
+        </div>
+      </div>
+      
+      {isExpanded && (
+        <div className="px-4 pb-4 border-t border-gray-100 dark:border-gray-700">
+          <div className="mt-3">
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Last 30 minutes status:</p>
+            <UptimeTicks ticks={website.uptimeTicks} />
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            Last checked: {website.lastChecked}
+          </p>
         </div>
       )}
     </div>
-  )
+  );
 }
+
+function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {websites, refreshWebsites} = useWebsites();
+  const { getToken } = useAuth();
+
+  const processedWebsites = useMemo(() => {
+    return websites.map(website => {
+      // Sort ticks by creation time
+      const sortedTicks = [...website.ticks].sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      // Get the most recent 30 minutes of ticks
+      const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+      const recentTicks = sortedTicks.filter(tick => 
+        new Date(tick.createdAt) > thirtyMinutesAgo
+      );
+
+      // Aggregate ticks into 3-minute windows (10 windows total)
+      const windows: UptimeStatus[] = [];
+
+      for (let i = 0; i < 10; i++) {
+        const windowStart = new Date(Date.now() - (i + 1) * 3 * 60 * 1000);
+        const windowEnd = new Date(Date.now() - i * 3 * 60 * 1000);
+        
+        const windowTicks = recentTicks.filter(tick => {
+          const tickTime = new Date(tick.createdAt);
+          return tickTime >= windowStart && tickTime < windowEnd;
+        });
+
+        // Window is considered up if majority of ticks are up
+        const upTicks = windowTicks.filter(tick => tick.status === 'Good').length;
+        windows[9 - i] = windowTicks.length === 0 ? "unknown" : (upTicks / windowTicks.length) >= 0.5 ? "good" : "bad";
+      }
+
+      // Calculate overall status and uptime percentage
+      const totalTicks = sortedTicks.length;
+      const upTicks = sortedTicks.filter(tick => tick.status === 'Good').length;
+      const uptimePercentage = totalTicks === 0 ? 100 : (upTicks / totalTicks) * 100;
+
+      // Get the most recent status
+      const currentStatus = windows[windows.length - 1];
+
+      // Format the last checked time
+      const lastChecked = sortedTicks[0]
+        ? new Date(sortedTicks[0].createdAt).toLocaleTimeString()
+        : 'Never';
+
+      return {
+        id: website.id,
+        url: website.url,
+        status: currentStatus,
+        uptimePercentage,
+        lastChecked,
+        uptimeTicks: windows,
+      };
+    });
+  }, [websites]);
+
+  // Toggle dark mode
+  React.useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      <div className="max-w-4xl mx-auto py-8 px-4">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-2">
+            <Globe className="w-8 h-8 text-blue-600" />
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Uptime Monitor</h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+            >
+              {isDarkMode ? (
+                <Sun className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              ) : (
+                <Moon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              )}
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Website</span>
+            </button>
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          {processedWebsites.map((website) => (
+            <WebsiteCard key={website.id} website={website} />
+          ))}
+        </div>
+      </div>
+
+      <CreateWebsiteModal
+        isOpen={isModalOpen}
+        onClose={async (url) => {
+            if (url === null) {
+                setIsModalOpen(false);
+                return;
+            }
+
+            const token = await getToken();
+            setIsModalOpen(false)
+            axios.post(`${API_BACKEND_URL}/api/v1/website`, {
+                url,
+            }, {
+                headers: {
+                    Authorization: token,
+                },
+            })
+            .then(() => {
+                refreshWebsites();
+            })
+        }}
+      />
+    </div>
+  );
+}
+
+export default App;

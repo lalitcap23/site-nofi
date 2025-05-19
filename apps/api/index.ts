@@ -1,10 +1,12 @@
 import express from "express";
 import { authMiddleware } from "./middleware";
 import { PrismaClient } from "@prisma/client";
+import  cors  from  "cors";
 
 const prismaClient = new PrismaClient();
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.post("/api/v1/website", authMiddleware, async (req, res) => {
