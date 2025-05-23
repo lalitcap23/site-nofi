@@ -32,6 +32,7 @@ import {
   Moon,
   Sun,
 } from "lucide-react"
+import router from "next/router"
 
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -266,9 +267,9 @@ const performanceData = [
                 <CreditCard className="h-3.5 w-3.5" />
                 <span>Upgrade</span>
               </button>
-              <button className="px-3 py-2 rounded-md bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white text-sm font-medium flex items-center gap-1">
+              <button onClick={() =>router.push('/dashboard')} className="px-3 py-2 rounded-md bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white text-sm font-medium flex items-center gap-1">
                 <BarChart3 className="h-3.5 w-3.5" />
-                <span>Generate Report</span>
+                <span>Start monitoring</span>
               </button>
             </div>
           </div>

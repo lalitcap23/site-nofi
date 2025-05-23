@@ -5,10 +5,12 @@ import { useWebsites } from '@/hooks/use.website';
 import axios from 'axios';
 import { API_BACKEND_URL } from '@/config';
 import { useAuth } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 type UptimeStatus = "good" | "bad" | "unknown";
 
-function StatusCircle({ status }: { status: UptimeStatus }) {
+function StatusCircle({ status }: { status: UptimeStatus }) 
+{
   return (
     <div className={`w-3 h-3 rounded-full ${status === 'good' ? 'bg-green-500' : status === 'bad' ? 'bg-red-500' : 'bg-gray-500'}`} />
   );
@@ -126,6 +128,8 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {websites, refreshWebsites} = useWebsites();
   const { getToken } = useAuth();
+  const router = useRouter();
+
 
   const processedWebsites = useMemo(() => {
     return websites.map(website => {
