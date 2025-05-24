@@ -128,7 +128,6 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {websites, refreshWebsites} = useWebsites();
   const { getToken } = useAuth();
-  const router = useRouter();
 
 
   const processedWebsites = useMemo(() => {

@@ -32,14 +32,16 @@ import {
   Moon,
   Sun,
 } from "lucide-react"
-import router from "next/router"
+import { useRouter } from "next/dist/client/components/navigation"
 
 export default function Dashboard() {
+  const router = useRouter()
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [theme, setTheme] = useState("dark")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    
     setMounted(true)
     // Set initial theme
     const savedTheme = localStorage.getItem("theme") || "dark"
@@ -161,7 +163,7 @@ const performanceData = [
               } gap-3 px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-md hover:bg-gray-100 dark:hover:bg-gray-800`}
             >
               <HardDrive className="h-5 w-5" />
-              {isSidebarOpen && <span>Resources</span>}
+              {isSidebarOpen && <span>About project</span>}
             </button>
             <button
               className={`flex items-center justify-${
@@ -233,12 +235,6 @@ const performanceData = [
 
               {/* User Menu */}
               <div className="relative">
-                <button className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-cyan-600">
-                    <span className="text-xs font-medium text-white">JS</span>
-                  </div>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
               </div>
             </div>
           </div>
@@ -247,17 +243,15 @@ const performanceData = [
         {/* Main Dashboard Content */}
         <main className="grid gap-6 p-6">
           <div className="flex flex-col gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-gray-500 dark:text-gray-400">Monitor your decentralized infrastructure on Solana</p>
+            <h1 className="text-2xl font-bold tracking-tight">Home</h1>
+            <p className="text-gray-500 dark:text-gray-400">Monitor your decentralized infrastructure </p>
           </div>
 
           {/* Tabs and Actions */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
               <button className="px-4 py-2 rounded-md bg-white dark:bg-gray-700 text-sm font-medium">Overview</button>
-              <button className="px-4 py-2 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400">
-                Analytics
-              </button>
+          
               <button className="px-4 py-2 rounded-md text-sm font-medium text-gray-500 dark:text-gray-400">
                 Reports
               </button>
@@ -548,7 +542,10 @@ const performanceData = [
                   <div className="h-2 w-2 rounded-full bg-emerald-500" />
                   <span className="text-sm font-medium">All systems operational</span>
                 </div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">Last updated: May 15, 2025 at 10:03 PM</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Last updated: {new Date().toLocaleString()}
+                </span>
+               
               </div>
             </div>
           </div>
